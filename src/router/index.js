@@ -12,101 +12,96 @@ export const constantRoutes = [
     component: () => import('@/views/login/index'),
     hidden: true
   },
+    {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+  },
+  {
+    path: '/dashboard',
+    component: Layout,
+    name: 'dashboard',
+    meta: { title: '首页', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: '',
+        name: 'dashboard',
+        component: () => import('@/views/dashboard/index'),
+        hidden: true
+      },
+    ]
+  },
+  {
+    path: '/messageLog',
+    component: Layout,
+    name: 'messageLog',
+    meta: { title: '消息日志', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/messageLog/index'),
+        hidden: true
+      },
+    ]
+  },
+  {
+    path: '/company',
+    component: Layout,
+    redirect: '/company/offer',
+    name: 'company',
+    meta: { title: '厂商订阅', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'offer',
+        name: 'offer',
+        component: () => import('@/views/company/offer'),
+        meta: { title: '提供方' }
+      },
+      {
+        path: 'consumer',
+        name: 'consumer',
+        component: () => import('@/views/company/consumer'),
+        meta: { title: '消费方' }
+      }
+    ]
+  },
+  {
+    path: '/port',
+    component: Layout,
+    redirect: '/port/offer',
+    name: 'port',
+    meta: { title: '接口订阅', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'offer',
+        name: 'offer',
+        component: () => import('@/views/port/offer'),
+        meta: { title: '提供方' }
+      },
+      {
+        path: 'consumer',
+        name: 'consumer',
+        component: () => import('@/views/port/consumer'),
+        meta: { title: '消费方' }
+      }
+    ]
+  },
+  {
+    path: '/subscriptionFind',
+    name: 'subscriptionFind',
+    component: Layout,
+    meta: { title: '订阅查询', icon: 'form' },
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/subscriptionFind/index'),
+        hidden: true
+      }
+    ]
+  },
 ]
 export const asyncRoutes = [
-  {
-    path: '/desensibilisationM',
-    component: Layout,
-    name: 'desensibilisationM',
-    redirect: '/desensibilisationM/DesensibilisationM',
-    meta: { title: '脱敏规则', icon: 'el-icon-s-help' },
-    children: [{
-      path: '/desensibilisationM/DesensibilisationM',
-      name: 'DesensibilisationM',
-      component: () => import('@/views/desensibilisationM/index'),
-      meta: { title: '脱敏管理' }
-    },
-    {
-      path: 'addDesensibilisationM',
-      name: 'addDesensibilisationM',
-      component: () => import('@/views/desensibilisationM/add'),
-      hidden: true,
-      meta: { title: '新增规则' }
-    }]
-  },
-
-  {
-    path: '/scene',
-    component: Layout,
-    redirect: '/scene/custom',
-    name: 'Scene',
-    meta: { title: '脱敏场景', icon: 'el-icon-s-help' },
-    children: [
-      {
-        path: 'custom',
-        name: 'custom',
-        component: () => import('@/views/scene/custom'),
-        meta: { title: '系统自定义脱敏' }
-      },
-      {
-        path: 'role',
-        name: 'role',
-        component: () => import('@/views/scene/role'),
-        meta: { title: '系统角色关联脱敏' }
-      }
-    ]
-  },
-  {
-    path: '/dictionaries',
-    component: Layout,
-    redirect: '/dictionaries/index',
-    meta: { title: '字典管理', icon: 'form' },
-    children: [
-      {
-        path: 'index',
-        name: 'dictionaries',
-        component: () => import('@/views/dictionaries/index'),
-        meta: { title: '系统字典' }
-      }
-    ]
-  },
-  {
-    path: '/logM',
-    component: Layout,
-    redirect: '/logM/index',
-    meta: { title: '日志管理', icon: 'form' },
-    children: [
-      {
-        path: 'index',
-        name: 'logM',
-        component: () => import('@/views/logM/index'),
-        meta: { title: '操作日志' }
-      }
-    ]
-  },
-  {
-    path: '/systemM',
-    component: Layout,
-    redirect: '/systemM/userM',
-    meta: {
-      title: '系统管理',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'userM',
-        component: () => import('@/views/systemM/userM'),
-        name: 'UserM',
-        meta: { title: '用户管理' }
-      },
-      {
-        path: 'roleM',
-        component: () => import('@/views/systemM/roleM'),
-        name: 'RoleM',
-        meta: { title: '角色管理' }
-      },
-    ]
-  },
+  
 ]
 
 

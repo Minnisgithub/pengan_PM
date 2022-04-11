@@ -15,7 +15,7 @@ function hasPermission(permissionKeys, route) {
 /**
  * Filter asynchronous routing tables by recursion
  * @param routes asyncRoutes
- * @param roles
+ * @param roles 
  */
 export function filterAsyncRoutes(routes, permissionKeys) {
   const res = []
@@ -47,7 +47,7 @@ const mutations = {
 const actions = {
   generateRoutes({ commit }, permissionKeys) {
     return new Promise(resolve => {
-      let accessedRoutes = filterAsyncRoutes(asyncRoutes, permissionKeys)
+      let accessedRoutes = filterAsyncRoutes(asyncRoutes, permissionKeys) // 权限管理、
       if (accessedRoutes.length) {
         //这样做的目的是进去的时候  能够在合理的路径上
         accessedRoutes.unshift({

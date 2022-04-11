@@ -10,9 +10,8 @@
         label-position="left"
       >
         <div class="title-container">
-          <h3 class="title">数据脱敏系统</h3>
+          <h3 class="title">项目管理系统</h3>
         </div>
-
         <el-form-item prop="username">
           <span class="svg-container">
             <svg-icon icon-class="user" />
@@ -138,22 +137,22 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
-        if (valid) {
-          this.loading = true;
-          this.$store
-            .dispatch("user/login", this.loginForm)
-            .then(() => {
-              console.log(this.$router);
+        // if (valid) {
+        //   this.loading = true;
+        //   this.$store
+        //     .dispatch("user/login", this.loginForm)
+        //     .then(() => {
+        //       console.log(this.$router);
               this.$router.push({ path:  "/" });
-              this.loading = false;
-            })
-            .catch(() => {
-              this.loading = false;
-            });
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
+        //       this.loading = false;
+        //     })
+        //     .catch(() => {
+        //       this.loading = false;
+        //     });
+        // } else {
+        //   console.log("error submit!!");
+        //   return false;
+        // }
       });
     },
   },

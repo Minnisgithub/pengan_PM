@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      title: '数据脱敏系统',
+      title: '项目管理系统',
       logo: require("@/assets/logo.jpg")
     }
   }
