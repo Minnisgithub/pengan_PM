@@ -52,10 +52,10 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ loginId: username.trim(), password: password }).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        commit('SET_TOKEN', data)
+        setToken(data)
         resolve()
       }).catch(error => {
         reject(error)
@@ -65,18 +65,35 @@ const actions = {
 
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      console.log(state);
-      getInfo(state.token).then(response => {
+      getInfo({ token: state.token }).then(response => {
         const { data } = response
         if (!data) {
           return reject('用户信息获取失败，请稍后重试！')
         }
-        const { permissionList, userName } = data
-        let flatRepeatedPermissionIds = DFS(permissionList)
-        let pgPermissionKeys = flatRepeatedPermissionIds.map(v => v.description)
+        const { list = [], userName } = data
+        let repeatedPermissionIds = [];
+        list.forEach(v => {
+          if (v.permissionIds && Array.isArray(v.permissionIds)) {
+            repeatedPermissionIds = repeatedPermissionIds.concat(v.permissionIds)
+          }
+        })
+        let flatRepeatedPermissionIds = DFS(repeatedPermissionIds)
+        let res = []
+        const fn = (source) => {
+          source.forEach(el => {
+            res.push(el)
+            el.children && el.children.length > 0 ? fn(el.children) : ""
+          })
+        }
+        fn(flatRepeatedPermissionIds)
+        let descriptionList = res.map(item => {
+          return item.description
+        })
+        const pgPermissionKeys = [...new Set(descriptionList)]
         commit('SET_PAGE_PERMISSION', pgPermissionKeys)
-        commit('SET_NAME', userName);
+        commit('SET_NAME', userName)
         resolve({ pgPermissionKeys })
+
       })
     })
   },

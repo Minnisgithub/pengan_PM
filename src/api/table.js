@@ -239,3 +239,18 @@ export function queryPermissionList(params) {
     params
   })
 }
+// 系统配置查询
+export function queryConfigList() {
+  return request({
+    url: '/config/queryConfigList',
+    method: 'get',
+  })
+}
+// 系统配置更新
+export function updateConfigList(data) {
+  return request({
+    url: '/config/updateConfigList',
+    method: 'post',
+    data
+  })
+}

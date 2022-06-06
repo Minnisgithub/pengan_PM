@@ -14,7 +14,12 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
-
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
+//高亮显示
+import VueHighlightJS from 'vue-highlightjs'
+import 'highlight.js/styles/atom-one-light.css'
+Vue.use(VueHighlightJS)
 
 Vue.use(ElementUI)
 

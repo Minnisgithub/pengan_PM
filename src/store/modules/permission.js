@@ -7,7 +7,7 @@ import { asyncRoutes, constantRoutes } from '@/router'
  */
 function hasPermission(permissionKeys, route) {
   let temp = permissionKeys.filter(key => {
-    return key.indexOf(route.meta.title) != -1
+    return key.indexOf(route.name) != -1
   })
   return !!temp.length
 }

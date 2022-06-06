@@ -2,23 +2,24 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/auth/login',
+    url: '/sysUser/login',
     method: 'post',
     data
   })
 }
 
-export function getInfo() {
+export function getInfo(params) {
   return request({
-    url: '/auth/getUserInfo',
-    method: 'post',
+    url: '/sysUser/getUserInfo',
+    method: 'get',
+    params
   })
 }
 
 export function logout() {
   return request({
-    url: '/auth/logout',
-    method: 'post'
+    url: '/sysUser/loginOut',
+    method: 'post',
   })
 }
 export function loginForSingleToken(data) {

@@ -48,8 +48,11 @@
   box-sizing: content-box;
 }
 .el-menu-item.is-active {
-  background-color: #f4f7f9 !important;
+  background-color: #fff !important;
 }
+// .el-menu-item:hover {
+  // background-color: #fff !important;
+// }
 .search-header{
   .el-form-item{
     margin-bottom: 0;
@@ -70,8 +73,24 @@
   margin-bottom: 10px;
 }
 .el-dialog{
-  width: 520px;
+  width: 600px;
   .el-input__inner{
     width: 300px;
   }
+}
+.el-menu-item{
+  font-size: 16px;
+}
+.el-submenu__title{
+  font-size: 16px;
+}
+.el-breadcrumb__item{
+  color: #000 !important;
+  font-size: 20px ;
+  font-weight: bold;
+}
+.no-redirect{
+  color: #000 !important;
+  font-size: 20px ;
+  font-weight: bold;
 }

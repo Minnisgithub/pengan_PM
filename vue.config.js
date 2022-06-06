@@ -38,9 +38,13 @@ module.exports = {
       errors: true
     },
     proxy: {
-      "/api": {
-        target: "http://192.168.101.51:8096",
-        pathRewrite: { "^/api": "" }
+      "/baseapi": {
+        target: "http://192.168.3.11:8088",
+        pathRewrite: { "^/baseapi": "" }
+      },
+      "/Odin": {
+        target: "http://192.168.1.155:8080",
+        pathRewrite: { "^/Odin": "" }
       }
     },
   },

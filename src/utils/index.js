@@ -115,3 +115,17 @@ export function param2Obj(url) {
   })
   return obj
 }
+// 防抖
+export function debounce(fn, delay){
+  let timer = null
+  return function(){
+      let content = this;
+      let args = arguments;
+      if(timer){
+          clearTimeout(timer)
+      }
+      timer = setTimeout(()=>{
+          fn.apply(content,args)
+      }, delay)
+  }
+}

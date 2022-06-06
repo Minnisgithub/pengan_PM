@@ -1,5 +1,9 @@
 <template>
   <div class="login-container">
+    <div class="login-top">
+      <img :src="loginTopImg" alt="" />
+      <span>· 集成平台管理系统</span>
+    </div>
     <div class="bg-center">
       <el-form
         ref="loginForm"
@@ -10,7 +14,7 @@
         label-position="left"
       >
         <div class="title-container">
-          <h3 class="title">项目管理系统</h3>
+          <div class="title"></div>
         </div>
         <el-form-item prop="username">
           <span class="svg-container">
@@ -68,6 +72,7 @@
 import { validUsername } from "@/utils/validate";
 import { setToken } from "@/utils/auth";
 import { loginForSingleToken as _loginForSingleToken } from "@/api/user";
+import loginTopImg from "@/assets/loginContainerTop.png";
 
 export default {
   name: "Login",
@@ -89,7 +94,7 @@ export default {
     return {
       loginForm: {
         username: "admin",
-        password: "123456",
+        password: "Jykj1994",
       },
       loginRules: {
         username: [{ required: true, trigger: "blur" }],
@@ -100,6 +105,7 @@ export default {
       loading: false,
       passwordType: "password",
       redirect: "",
+      loginTopImg: loginTopImg,
     };
   },
   watch: {
@@ -137,22 +143,20 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
-        // if (valid) {
-        //   this.loading = true;
-        //   this.$store
-        //     .dispatch("user/login", this.loginForm)
-        //     .then(() => {
-        //       console.log(this.$router);
-              this.$router.push({ path:  "/" });
-        //       this.loading = false;
-        //     })
-        //     .catch(() => {
-        //       this.loading = false;
-        //     });
-        // } else {
-        //   console.log("error submit!!");
-        //   return false;
-        // }
+        if (valid) {
+          this.loading = true;
+          this.$store
+            .dispatch("user/login", this.loginForm)
+            .then(() => {
+            this.$router.push({ path: "/" });
+              this.loading = false;
+            })
+            .catch(() => {
+              this.loading = false;
+            });
+        } else {
+          return false;
+        }
       });
     },
   },
@@ -209,20 +213,18 @@ $dark_gray: #889aa4;
 $light_gray: #eee;
 
 .login-container {
-  min-height: 100%;
-  width: 100%;
-  background-color: $bg;
-  overflow: hidden;
-
+  background-image: url(../../assets/loginContainer.png);
+  height: 100vh;
+  background-color: #f4f6fb;
+  position: relative;
   .login-form {
     position: relative;
-    width: 520px;
+    width: 410px;
     max-width: 100%;
     padding: 60px 0;
     margin: 0 auto;
     overflow: hidden;
   }
-
   .tips {
     font-size: 14px;
     color: #fff;
@@ -234,7 +236,6 @@ $light_gray: #eee;
       }
     }
   }
-
   .svg-container {
     padding: 6px 5px 6px 15px;
     color: $dark_gray;
@@ -242,16 +243,13 @@ $light_gray: #eee;
     width: 30px;
     display: inline-block;
   }
-
   .title-container {
     position: relative;
-
     .title {
-      font-size: 26px;
-      color: #0f1011;
-      margin: 0px auto 40px auto;
-      text-align: center;
-      font-weight: bold;
+      width: 130px;
+      height: 40px;
+      background-image: url(../../assets/userLogin.png);
+      margin-bottom: 50px;
     }
   }
   .show-pwd {
@@ -265,29 +263,49 @@ $light_gray: #eee;
   }
 }
 .bg-center {
-  background-image: url(../../assets/bglog.jpg);
   width: 700px;
+  height: 100%;
   margin: 0 auto;
-  padding-left: 330px;
-  position: relative;
-}
-.login-container {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  background-color: #f4f6fb;
 }
+
 .remark {
-  position: absolute;
+  margin-top: 20px;
   width: 480px;
   display: flex;
   justify-content: space-around;
-  bottom: -30px;
+  top: 430px;
   left: 100px;
   font-size: 12px;
   color: #b3b9c2;
 }
 .login-form {
   background-color: #fff;
-  padding: 60px 10px !important;
+  padding: 50px !important;
+}
+.login-top {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  height: 26px;
+  // width: 300px;
+  display: flex;
+  line-height: 32px;
+  font-size: 20px;
+  font-weight: bold;
+  span {
+    margin-left: 10px;
+  }
+  // background-image: url(../../assets/loginContainerTop.png);
+}
+.el-form {
+  width: 410px;
+  height: 512px;
+  .el-form-item{
+    margin-bottom: 36px;
+  }
 }
 </style>
