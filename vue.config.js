@@ -39,7 +39,7 @@ module.exports = {
     },
     proxy: {
       "/baseapi": {
-        target: "http://192.168.3.11:8088",
+        target: "http://192.168.3.12:8088",
         pathRewrite: { "^/baseapi": "" }
       },
       "/Odin": {
