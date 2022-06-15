@@ -27,7 +27,7 @@
             <el-form-item label="接口名称:">
               <el-input
                 v-model="formInline.condition"
-                placeholder="名称\简拼检索"
+                placeholder="名称\编码检索"
               >
               </el-input>
             </el-form-item>

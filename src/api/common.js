@@ -258,3 +258,19 @@ export function queryPermissionList() {
     method: 'get',
   })
 }
+// 系统配置查询
+export function queryConfigList(params) {
+  return request({
+    url: '/SSOConfig/queryList',
+    method: 'get',
+    params
+  })
+}
+// 系统配置更新
+export function updateConfigList(data) {
+  return request({
+    url: '/SSOConfig/updateList',
+    method: 'post',
+    data
+  })
+}

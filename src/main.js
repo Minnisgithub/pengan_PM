@@ -20,7 +20,8 @@ Vue.prototype.$echarts = echarts
 import VueHighlightJS from 'vue-highlightjs'
 import 'highlight.js/styles/atom-one-light.css'
 Vue.use(VueHighlightJS)
-
+import moment from "moment"
+Vue.prototype.$moment = moment;
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false

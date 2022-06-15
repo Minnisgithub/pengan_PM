@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-top">
       <img :src="loginTopImg" alt="" />
-      <span>· 集成平台管理系统</span>
+      <span>· 项目管理系统</span>
     </div>
     <div class="bg-center">
       <el-form
@@ -119,11 +119,11 @@ export default {
   created() {
     const token = this.$route.query.singleToken;
     if (token) {
-      _loginForSingleToken({ singleToken: this.$route.query.singleToken }).then(
+      _loginForSingleToken(token).then(
         (res) => {
           if (res.code == 200) {
-            this.$store.commit("user/SET_TOKEN", res.data.token);
-            setToken(res.data.token);
+            this.$store.commit("user/SET_TOKEN", res.data);
+            setToken(res.data);
             this.$router.push({ path: this.redirect || "/" });
           }
         }

@@ -18,7 +18,7 @@
             <el-form-item label="消息名称:">
               <el-input
                 v-model="formInline.interfaceNameOrCode"
-                placeholder="名称\简拼检索"
+                placeholder="名称检索"
               >
               </el-input>
             </el-form-item>
@@ -173,7 +173,7 @@ import vkbeautify from "vkbeautify";
 export default {
   data() {
     return {
-      formInline: { result: "" },
+      formInline: { result: ""},
       tableData: [],
       multipleSelection: [],
       pagination: {
@@ -199,8 +199,8 @@ export default {
         result: this.formInline.result,
         page: current || this.pagination.current,
         size: size || this.pagination.size,
-        beginTime: this.formInline.time ? this.formInline.time[0] : undefined,
-        endTime: this.formInline.time ? this.formInline.time[1] : undefined,
+        beginTime: this.formInline.time ? this.formInline.time[0] :this.$moment().add(-7, 'd').format("YYYY-MM-DD HH:mm:ss "),
+        endTime: this.formInline.time ? this.formInline.time[1] : this.$moment().add(0, 'd').format("YYYY-MM-DD HH:mm:ss "),
       };
       _serviceLogList(data).then((res) => {
         this.pagination.current = res.data.pageNum;

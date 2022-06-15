@@ -11,9 +11,6 @@ const service = axios.create({
 
 service.interceptors.request.use(
   config => {
-    if (store.getters.token) {
-      config.headers['Token'] = getToken()
-    }
     return config
   },
   error => {

@@ -2,7 +2,8 @@
   <div >
       <div class="flex">
         <div class="logo"><img :src="logo"/></div>
-        <div class="system-name"> ·集成平台管理系统</div>
+        <div class="dot"> · </div>
+        <div class="system-name">项目管理系统</div>
          <el-menu
         :default-active="activeMenu"
         :background-color="variables.menuBg"
@@ -81,8 +82,14 @@ export default {
   .logo{
     padding-left: 20px;
     img{
-      height: 40px;
+      height: 30px;
     }
+  }
+  .dot{
+    font-size: 26px;
+    font-weight: bold;
+    margin:10px;
+    padding-top: 10px;
   }
   .right-menu {
     float: right;
@@ -135,7 +142,7 @@ export default {
     font-size: 26px;
     min-width: 220px;
     font-weight: bold;
-    margin-top: 12px;
+    margin-top: 9px;
     margin-right: 30px;
   }
   .el-menu{

@@ -13,7 +13,6 @@
 </template>
 
 <script>
-const date = new Date();
 export default {
   data() {
     return {
@@ -28,7 +27,8 @@ export default {
     };
   },
   methods: {
-    dateChange(v) {
+    dateChange(v=this.value) {
+      console.log(v);
       if (v === 60) {
         this.timevalue = new Date().getTime() - 3600 * 1000;
       } else if (v === 72) {

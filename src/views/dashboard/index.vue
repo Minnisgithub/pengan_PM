@@ -68,7 +68,7 @@
               <div class="title">队列警报</div>
               <div class="flex-space-around">
                 <div>
-                  <p class="number Info">{{ jccount }}</p>
+                  <p class="number Info">{{ jbcount }}</p>
                   <p class="des">队列警报</p>
                 </div>
               </div>
@@ -76,9 +76,14 @@
           </div>
           <el-card class="l_center">
             <div class="title">
-              <div>消息处理数量（采集间隔 20m）</div>
+              <div>消息处理数量（采集间隔 {{ interval }}）</div>
               <div class="search">
-                <el-select v-model="msgValue" placeholder="请选择" size="mini">
+                <el-select
+                  v-model="msgValue"
+                  @change="msgValueChange"
+                  placeholder="请选择"
+                  size="mini"
+                >
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -91,7 +96,11 @@
                   ref="datePicker"
                   @dateChange="timeChange"
                 ></DatePicker>
-                <el-button size="mini" icon="el-icon-refresh"></el-button>
+                <el-button
+                  size="mini"
+                  icon="el-icon-refresh"
+                  @click="refesh"
+                ></el-button>
               </div>
             </div>
             <div id="main"></div>
@@ -104,7 +113,56 @@
       </el-col>
       <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
         <div class="grid-content right">
-          <div class="r_top"></div>
+          <el-card class="r_top">
+            <div style="margin-bottom: 20px" class="title">
+              消息清理调度信息
+            </div>
+            <div>
+              <el-alert
+                v-if="skippedDates.length > 0"
+                title="错误消息未清理"
+                type="warning"
+                show-icon
+                :closable="false"
+              >
+              </el-alert>
+              <el-alert
+                v-else
+                title="消息已清理"
+                type="success"
+                show-icon
+                :closable="false"
+              >
+              </el-alert>
+              <el-descriptions :column="1">
+                <el-descriptions-item
+                  label="开始时间"
+                  label-class-name="my-label"
+                  content-class-name="my-content"
+                  >{{ startTime }}</el-descriptions-item
+                >
+                <el-descriptions-item
+                  label="清理时长"
+                  label-class-name="my-label"
+                  content-class-name="my-content"
+                  >{{ duration }}</el-descriptions-item
+                >
+                <el-descriptions-item
+                  label="配置数据保存期限"
+                  label-class-name="my-label"
+                  content-class-name="my-content"
+                  >{{ configuredRetention }}</el-descriptions-item
+                >
+                <el-descriptions-item
+                  label="实际数据保存期限"
+                  label-class-name="my-label"
+                  content-class-name="my-content"
+                >
+                  {{ actualRetention }}
+                </el-descriptions-item>
+              </el-descriptions>
+            </div>
+          </el-card>
           <el-card class="r_center">
             <div class="title">堆内存</div>
             <div id="main2"></div>
@@ -131,6 +189,8 @@ import {
   terminal as _terminal,
   project as _project,
   esbproject as _esbproject,
+  computerSearch as _computerSearch,
+  messagesDataClean as _messagesDataClean,
 } from "@/api/dashboard";
 import DatePicker from "@/components/DatePicker";
 export default {
@@ -153,6 +213,8 @@ export default {
       overallReceiveCount: 0, // 历史接收消息总数
       jccount: 0,
       jkcount: 0,
+      jbcount: 0,
+      interval: "1分钟",
       options: [
         {
           value: "接收",
@@ -164,132 +226,21 @@ export default {
         },
       ],
       msgValue: "接收",
-
-      option: {
-        tooltip: {
-          trigger: "axis",
-        },
-        legend: {},
-        toolbox: {
-          show: true,
-        },
-        xAxis: {
-          type: "category",
-          boundaryGap: false,
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        },
-        yAxis: {
-          type: "value",
-          axisLabel: {
-            formatter: "{value} ",
-          },
-        },
-        series: [
-          {
-            name: "主机接收消息量",
-            type: "line",
-            data: [10, 11, 13, 11, 12, 12, 9],
-          },
-          {
-            name: "主机接收错误消息量",
-            type: "line",
-            data: [1, -2, 2, 5, 3, 2, 0],
-          },
-        ],
-      },
-      option1: {
-        xAxis: {
-          type: "category",
-        },
-        yAxis: {
-          type: "value",
-        },
-        series: [
-          {
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
-            type: "line",
-            smooth: true,
-          },
-        ],
-      },
-      option2: {
-        tooltip: {
-          trigger: "item",
-        },
-        legend: {
-          top: "center",
-          right: "0",
-          orient: "vertical",
-        },
-        series: [
-          {
-            name: "Access From",
-            type: "pie",
-            radius: ["40%", "70%"],
-            avoidLabelOverlap: false,
-            label: {
-              show: false,
-              position: "center",
-            },
-            emphasis: {
-              label: {
-                show: true,
-                fontSize: "40",
-                fontWeight: "bold",
-              },
-            },
-            labelLine: {
-              show: false,
-            },
-            data: [
-              { value: 1048, name: "Search Engine" },
-              { value: 735, name: "Direct" },
-              { value: 580, name: "Email" },
-              { value: 484, name: "Union Ads" },
-              { value: 300, name: "Video Ads" },
-            ],
-          },
-        ],
-      },
-      option3: {
-        tooltip: {
-          trigger: "item",
-        },
-        legend: {
-          top: "center",
-          right: "0",
-          orient: "vertical",
-        },
-        series: [
-          {
-            name: "Access From",
-            type: "pie",
-            radius: ["40%", "70%"],
-            avoidLabelOverlap: false,
-            label: {
-              show: false,
-              position: "center",
-            },
-            emphasis: {
-              label: {
-                show: true,
-                fontSize: "40",
-                fontWeight: "bold",
-              },
-            },
-            labelLine: {
-              show: false,
-            },
-            data: [
-              { value: 1048, name: "Search Engine" },
-              { value: 735, name: "Direct" },
-              { value: 580, name: "Email" },
-              { value: 484, name: "Union Ads" },
-              { value: 300, name: "Video Ads" },
-            ],
-          },
-        ],
-      },
+      option: {},
+      option1: {},
+      ProcessCpuLoad: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      ],
+      SystemCpuLoad: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      ],
+      option2: {},
+      option3: {},
+      startTime: "",
+      duration: "",
+      actualRetention: "",
+      configuredRetention: "",
+      skippedDates: [],
     };
   },
 
@@ -310,6 +261,9 @@ export default {
           _alljblengths().then((item) => {
             this.judgeEndpoints(res.endpoints, item.endpoints);
             this.judgeProjects(res.projects, item.projects);
+            this.jbcount =
+              this.judgeEndpoints(res.endpoints, item.endpoints).length +
+              this.judgeProjects(res.projects, item.projects).length;
           });
         }
       });
@@ -325,6 +279,7 @@ export default {
           }
         }
       }
+      return overPoints;
     },
     judgeProjects(projects, allProjects) {
       let overPoints = [];
@@ -352,31 +307,360 @@ export default {
           }
         }
       }
+      return overPoints;
     },
     // 消息处理数量
+    msgValueChange() {
+      this.$refs.datePicker.dateChange();
+    },
+    refesh() {
+      this.$refs.datePicker.dateChange();
+    },
     timeChange(v) {
-      _countSeries(v).then((res) => {});
+      const numPoints = v.numPoints;
+      if (numPoints === 60) {
+        this.interval = "1分钟";
+      } else if (numPoints === 72) {
+        this.interval = "30分钟";
+      } else if (numPoints === 42) {
+        this.interval = "6小时";
+      } else if (numPoints === 84) {
+        this.interval = "6小时";
+      } else if (numPoints === 180) {
+        this.interval = "6小时";
+      }
+      _countSeries(v).then((res) => {
+        let { receiveCount, receiveErrorCount, sendCount, sendErrorCount } =
+          res.primary;
+        const timeLength = res.primary.receiveCount.map((item) => {
+          return new Date(+new Date(item.timestamp) + 8 * 3600 * 1000)
+            .toISOString()
+            .replace(/T/g, " ")
+            .replace(/\.[\d]{3}Z/, "");
+        });
+        let data1 = this.msgValue == "接收" ? receiveCount : sendCount;
+        let data2 =
+          this.msgValue == "接收" ? receiveErrorCount : sendErrorCount;
+        this.option = {
+          tooltip: {
+            trigger: "axis",
+          },
+          legend: {},
+
+          toolbox: {
+            show: true,
+          },
+          xAxis: {
+            type: "category",
+            boundaryGap: false,
+            data: timeLength,
+            show: false, //让刻度隐藏
+          },
+          yAxis: {
+            type: "value",
+            axisLabel: {
+              formatter: "{value}",
+            },
+          },
+          series: [
+            {
+              name: `主机${this.msgValue}消息量`,
+              type: "line",
+              data: data1.map((item) => {
+                return item.value;
+              }),
+            },
+            {
+              name: `主机${this.msgValue}错误消息量`,
+              type: "line",
+              data: data2.map((item) => {
+                return item.value;
+              }),
+            },
+          ],
+        };
+        this.myChart.setOption(this.option);
+      });
     },
-    msgDispose() {
+    myEcharts() {
       this.myChart = this.$echarts.init(document.getElementById("main"));
-      this.myChart.setOption(this.option);
-    },
-    myEcharts1() {
       this.myChart1 = this.$echarts.init(document.getElementById("main1"));
-      this.myChart1.setOption(this.option1);
       this.myChart2 = this.$echarts.init(document.getElementById("main2"));
-      this.myChart2.setOption(this.option2);
       this.myChart3 = this.$echarts.init(document.getElementById("main3"));
       this.myChart3.setOption(this.option3);
+    },
+    computerSearch() {
+      const data = [
+        {
+          type: "read",
+          mbean: "loki:type=FileSystem",
+          attribute: "Total",
+          group: "disk",
+          path: null,
+        },
+        {
+          type: "read",
+          mbean: "loki:type=FileSystem",
+          attribute: "UsePercent",
+          group: "disk",
+          path: null,
+        },
+        {
+          type: "read",
+          mbean: "loki:type=FileSystem",
+          attribute: "Used",
+          group: "disk",
+          path: null,
+        },
+        {
+          type: "read",
+          mbean: "java.lang:type=OperatingSystem",
+          attribute: "FreePhysicalMemorySize",
+          group: "memory",
+          path: null,
+        },
+        {
+          type: "read",
+          mbean: "java.lang:type=OperatingSystem",
+          attribute: "TotalPhysicalMemorySize",
+          group: "memory",
+          path: null,
+        },
+        {
+          type: "read",
+          mbean: "java.lang:type=Memory",
+          attribute: "HeapMemoryUsage",
+          group: "langMemory",
+          path: "committed",
+        },
+        {
+          type: "read",
+          mbean: "java.lang:type=Memory",
+          attribute: "NonHeapMemoryUsage",
+          group: "langMemory",
+          path: "committed",
+        },
+        {
+          type: "read",
+          mbean: "java.lang:type=OperatingSystem",
+          attribute: "ProcessCpuLoad",
+          group: "cpu",
+          path: null,
+        },
+        {
+          type: "read",
+          mbean: "java.lang:type=OperatingSystem",
+          attribute: "SystemCpuLoad",
+          group: "cpu",
+          path: null,
+        },
+      ];
+      _computerSearch(data).then((res) => {
+        this.ProcessCpuLoad.push(res[7].value * 100);
+        this.ProcessCpuLoad.shift();
+        this.SystemCpuLoad.push(res[8].value * 100);
+        this.SystemCpuLoad.shift();
+        this.option1 = {
+          legend: {
+            right: "10%",
+            data: [
+              { icon: "circle", name: "进程CPU负载" },
+              { icon: "circle", name: "系统CPU负载" },
+            ],
+          },
+          xAxis: {
+            type: "category",
+          },
+          yAxis: {
+            type: "value",
+            min: 0,
+            max: 100,
+          },
+          color: ["#35c5cb", "#7e90e3"],
+          series: [
+            {
+              name: `进程CPU负载`,
+              data: this.ProcessCpuLoad,
+              type: "line",
+              smooth: true,
+              symbol: "none",
+              areaStyle: {
+                color: "#35c5cb",
+              },
+              itemStyle: {
+                normal: {
+                  lineStyle: {
+                    color: "#35c5cb", //改变折线颜色
+                  },
+                },
+              },
+            },
+            {
+              name: `系统CPU负载`,
+              data: this.SystemCpuLoad,
+              type: "line",
+              smooth: true,
+              areaStyle: { color: "#e6f2f9" },
+              symbol: "none",
+              itemStyle: {
+                normal: {
+                  lineStyle: {
+                    color: "#7e90e3", //改变折线颜色
+                  },
+                },
+              },
+            },
+          ],
+        };
+        this.myChart1.setOption(this.option1);
+        let pileUsable =
+          Math.floor((res[3].value / 1024 / 1024 / 1024) * 100) / 100;
+        let pileEngine =
+          Math.floor(
+            ((res[5].value + res[6].value) / 1024 / 1024 / 1024) * 100
+          ) / 100;
+        let pileOther =
+          Math.floor((res[4].value / 1024 / 1024 / 1024) * 100) / 100 -
+          pileUsable -
+          pileEngine;
+        this.option2 = {
+          tooltip: {
+            trigger: "item",
+          },
+          legend: {
+            top: "center",
+            right: "0",
+            orient: "vertical",
+            formatter: (name) => {
+              let data = this.option2.series[0].data;
+              let total = 0;
+              let tarValue = 0;
+              for (let i = 0, l = data.length; i < l; i++) {
+                total += data[i].value;
+                if (data[i].name == name) {
+                  tarValue = data[i].value;
+                }
+              }
+              let p = ((tarValue / total) * 100).toFixed(0);
+              return name + p + "%";
+            },
+          },
+          tooltip: {
+            formatter: (params) => {
+              return params.data.name + " " + params.value + " " + "GB";
+            },
+          },
+          series: [
+            {
+              name: "磁盘空间",
+              type: "pie",
+              radius: ["40%", "70%"],
+              avoidLabelOverlap: false,
+              label: {
+                show: false,
+                position: "center",
+              },
+              emphasis: {
+                label: {
+                  show: true,
+                  fontSize: "40",
+                  fontWeight: "bold",
+                },
+              },
+              labelLine: {
+                show: false,
+              },
+              color: ["#67C23A", "#6d7ee1", "#34c6d0"],
+              data: [
+                { value: pileUsable, name: "可用" },
+                { value: pileEngine, name: "引擎" },
+                { value: pileOther, name: "其他" },
+              ],
+            },
+          ],
+        };
+        this.myChart2.setOption(this.option2);
+
+        let diskspaceAll =
+          Math.floor((res[0].value / 1024 / 1024 / 1024) * 100) / 100;
+        let diskspaceUsed =
+          Math.floor((res[2].value / 1024 / 1024 / 1024) * 100) / 100;
+        this.option3 = {
+          tooltip: {
+            trigger: "item",
+          },
+          legend: {
+            top: "center",
+            right: "0",
+            orient: "vertical",
+            formatter: (name) => {
+              let data = this.option3.series[0].data;
+              let total = 0;
+              let tarValue = 0;
+              for (let i = 0, l = data.length; i < l; i++) {
+                total += data[i].value;
+                if (data[i].name == name) {
+                  tarValue = data[i].value;
+                }
+              }
+              let p = ((tarValue / total) * 100).toFixed(0);
+              return name + p + "%";
+            },
+          },
+          tooltip: {
+            formatter: (params) => {
+              return params.data.name + " " + params.value + " " + "GB";
+            },
+          },
+          series: [
+            {
+              name: "磁盘空间",
+              type: "pie",
+              radius: ["40%", "70%"],
+              avoidLabelOverlap: false,
+              label: {
+                show: false,
+                position: "center",
+              },
+              emphasis: {
+                label: {
+                  show: true,
+                  fontSize: "40",
+                  fontWeight: "bold",
+                },
+              },
+              labelLine: {
+                show: false,
+              },
+              color: ["#67C23A", "#6d7ee1"],
+              data: [
+                { value: diskspaceAll - diskspaceUsed, name: "可用" },
+                { value: diskspaceUsed, name: "已用" },
+              ],
+            },
+          ],
+        };
+        this.myChart3.setOption(this.option3);
+      });
+    },
+    countTime() {
+      this.timeObject = setInterval(() => {
+        this.computerSearch();
+      }, 3000);
     },
   },
   mounted() {
     // 运行时间
     _currentTime().then((res) => {
-      const date = new Date(res.issueDate);
-      const newdata = new Date();
-      let dateDiff = newdata.getTime() - date.getTime();
-      this.runTime = Math.floor(dateDiff / (24 * 3600 * 1000));
+      // 接口获取时间
+      // const date = new Date(res.issueDate);
+      // const newdata = new Date();
+      // let dateDiff = newdata.getTime() - date.getTime();
+      // this.runTime = Math.floor(dateDiff / (24 * 3600 * 1000));
+      // 配合odin平台时间
+      this.runTime = this.$moment()
+        .diff(this.$moment("2021-06-30"), "days")
+        .toString()
     });
     //  历史收发消息
     _overallReceiveCount().then((res) => {
@@ -414,13 +698,35 @@ export default {
     this.errorMsg(); // 错误消息数量
     this.jblengths(); // 队列警报
     this.$refs.datePicker.dateChange(60); //消息处理数量(默认1小时)
-    this.msgDispose();
-    this.myEcharts1();
+    this.myEcharts();
     window.addEventListener("resize", () => {
       this.myChart.resize();
       this.myChart1.resize();
       this.myChart2.resize();
       this.myChart3.resize();
+    });
+    // cpu 堆内存 磁盘空间
+    this.countTime();
+    this.computerSearch();
+    _messagesDataClean().then((res) => {
+      this.startTime = new Date(+new Date(res.startTime) + 8 * 3600 * 1000)
+        .toISOString()
+        .replace(/T/g, " ")
+        .replace(/\.[\d]{3}Z/, "");
+      this.duration = res.duration + "ms";
+      this.actualRetention = new Date(
+        +new Date(res.actualRetention) + 8 * 3600 * 1000
+      )
+        .toISOString()
+        .replace(/T/g, " ")
+        .replace(/\.[\d]{3}Z/, "");
+      this.configuredRetention = new Date(
+        +new Date(res.configuredRetention) + 8 * 3600 * 1000
+      )
+        .toISOString()
+        .replace(/T/g, " ")
+        .replace(/\.[\d]{3}Z/, "");
+      this.skippedDates = res.skippedDates;
     });
   },
   beforeDestroy() {
@@ -430,6 +736,7 @@ export default {
       this.myChart2.resize();
       this.myChart3.resize();
     });
+    clearInterval(this.timeObject);
   },
 };
 </script>
@@ -487,19 +794,19 @@ export default {
   }
 }
 .grid-content {
-  border-radius: 4px;
+  border-radius: 8px;
   min-height: 36px;
 }
 .left {
   .l_top {
-    height: 160px;
+    height: 150px;
     display: flex;
     margin-bottom: 10px;
     justify-content: space-between;
     .number {
       text-align: center;
-      font-size: 22px;
-      font-weight: bold;
+      font-size: 24px;
+      font-weight: 800;
     }
     .success {
       color: #0f6;
@@ -515,13 +822,15 @@ export default {
     }
     .l_top_l {
       width: 48%;
+      background: #fff url(../../assets/error.png) no-repeat 94% 10%;
     }
     .l_top_r {
       width: 48%;
+      background: #fff url(../../assets/warning.png) no-repeat 94% 10%;
     }
   }
   .l_center {
-    height: 400px;
+    height: 390px;
     margin-bottom: 10px;
     .title {
       display: flex;
@@ -542,15 +851,14 @@ export default {
     }
   }
   .l_bottom {
-    height: 240px;
+    height: 200px;
   }
 }
 .right {
   .r_top {
-    height: 380px;
+    height: 320px;
     margin-bottom: 10px;
-    border-radius: 4px;
-    border: 1px solid #99a9bf;
+    border-radius: 8px;
   }
   .r_center {
     height: 200px;
@@ -575,5 +883,12 @@ export default {
 }
 #main3 {
   height: 180px;
+}
+::v-deep .my-label {
+  width: 140px;
+}
+.el-descriptions {
+  margin-top: 10px;
+  padding: 8px;
 }
 </style>

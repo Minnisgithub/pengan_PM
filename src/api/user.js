@@ -22,10 +22,20 @@ export function logout() {
     method: 'post',
   })
 }
-export function loginForSingleToken(data) {
+export function loginForSingleToken(token) {
   return request({
-    url: '/auth/loginForSingleToken',
+    url: '/sysUser/checkToken',
     method: 'post',
-    data
+    headers: {
+      token
+    }
+  })
+}
+// 获取odin接口token
+export function getOdinToken(params) {
+  return request({
+    url: '/firstPage/getOdinToken',
+    method: 'get',
+    params
   })
 }

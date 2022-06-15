@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo,getOdinToken } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -55,6 +55,9 @@ const actions = {
       login({ loginId: username.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data)
+        getOdinToken().then(res=>{
+          localStorage.setItem('SETODINTOKEN',res.data)
+        })
         setToken(data)
         resolve()
       }).catch(error => {

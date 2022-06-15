@@ -129,12 +129,12 @@ export const asyncRoutes = [
         name: '/systemM/roleM',
         meta: { title: '角色管理' }
       },
-      // {
-      //   path: 'systemConfiguration',
-      //   component: () => import('@/views/systemM/systemConfiguration'),
-      //   name: 'systemConfiguration',
-      //   meta: { title: '系统配置' }
-      // },
+      {
+        path: 'systemConfiguration',
+        component: () => import('@/views/systemM/systemConfiguration'),
+        name: 'systemConfiguration',
+        meta: { title: '系统配置' }
+      },
     ]
   },
 ]
